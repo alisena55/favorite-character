@@ -1,0 +1,56 @@
+package com.csc340.character_api.characters;
+
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/characters")
+public class FictionalCharacterController {
+  
+  private final FictionalCharacterService service;
+  
+  public FictionalCharacterController(FictionalCharacterService service) {
+	this.service = service;
+  }
+  
+  @GetMapping
+  public List<FictionalCharacter> list(@RequestParam(required = false) String name,
+									   @RequestParam(required = false) String universe) {
+	return service.search(name, universe);
+  }
+  
+  @GetMapping("/{id}")
+  public FictionalCharacter get(@PathVariable Long id) {
+	return service.findById(id);
+  }
+  
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public FictionalCharacter create(@Valid @RequestBody FictionalCharacter character) {
+	return service.create(character);
+  }
+  
+  @PutMapping("/{id}")
+  public FictionalCharacter update(@PathVariable Long id,
+								   @Valid @RequestBody FictionalCharacter character) {
+	return service.update(id, character);
+  }
+  
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable Long id) {
+	service.delete(id);
+  }
+}
